@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from mover import *
 
 if __name__ == '__main__':
