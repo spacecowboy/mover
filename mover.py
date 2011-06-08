@@ -46,11 +46,18 @@ def copy_file(file, to_dir, extensions = ['avi', 'mkv']):
         
     #for file in files:
     try:
-        shutil.copy(file, to_dir)
+        #On linux, this will throw an exception if we copy to NTFS, where permissions do not exist, ignore that error
+        try:
+            shutil.copy(file, to_dir)
+        except OSError as error:
+            if 'Errno 1' in str(error):
+                pass
+            else:
+                raise
         print "Copied " + file + " to " + to_dir
         #    os.remove(file)
         #print "Removed " + file
-    except WindowsError, errormsg:
+    except OSError as errormsg:
         print "Couldn't copy " + file + " because %s" % errormsg
         raise
         
@@ -84,13 +91,13 @@ def rename_file(name, filename, path, extensions = ['avi', 'mkv']):
     #get season and episode number
     (formatted_name, season, episode, episodename, extension) = get_formatted_name(filename, name)
     if formatted_name:
-        path = path + '\\'
+        #path = path + '\\'
         #Only for avi and mkv files
         if extension in extensions or extension.replace('.', '') in extensions:
             try:
-                os.rename(path + filename, path + formatted_name)
-                print "Renamed " + path + formatted_name
-            except WindowsError, errormsg:
+                os.rename(os.path.join(path, filename), os.path.join(path, formatted_name))
+                print "Renamed " + os.path.join(path, formatted_name)
+            except OSError as errormsg:
                 print "Couldn't rename " + filename + " because %s" % errormsg
                 print "episodename: %s" % episodename
                 raise
@@ -99,9 +106,9 @@ if __name__ == '__main__':
     import logging
     logging.basicConfig(level=logging.INFO)
     
-    f = open('tvshows.txt', 'r')
+    #f = open('tvshows.txt', 'r')
     #names = f.readlines()
-    names = ['How I Met Your Mother', 'The Big Bang Theory', 'The Simpsons', 'Top Gear', 'Mythbusters', 'Big Love', 'Fringe', 'Boardwalk Empire', 'Dexter', 'House', 'Burnistoun', 'Breaking Bad', 'Futurama', 'The IT Crowd']
+    names = ['How I Met Your Mother', 'Bored to Death', 'The Big Bang Theory', 'The Simpsons', 'Top Gear', 'Mythbusters', 'Big Love', 'Fringe', 'Boardwalk Empire', 'Dexter', 'House', 'Burnistoun', 'Breaking Bad', 'Futurama', 'The IT Crowd']
     #names = ['The Big Bang Theory']
     dir = "E:\\Downloads\\torrent"
     todir = "E:\\Film\\TV-Serier\\"
@@ -132,7 +139,7 @@ if __name__ == '__main__':
                 #It exists, try to remove the file then
                 #print "Removing " + file
                 #os.remove(file)
-            except WindowsError, errormsg:
+            except OSError as errormsg:
                 print "Couldn't handle " + filename + " because %s" % errormsg
                 
     
