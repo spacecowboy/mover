@@ -15,7 +15,13 @@ def formatname(text=''):
     return string.replace(text, ' ', '*')
 
 def generate_filepattern(showname, season='', episode=''):
-    pattern = showname + '*?' + season + '*?' + episode + '*[am][vk][iv]'
+    name = ""
+    for char in showname:
+        if str.lower(char) in string.lowercase + string.digits:
+            name += '[' + str.lower(char) + str.upper(char) + ']'
+        else:
+            name += char
+    pattern = name + '*?' + season + '*?' + episode + '*[am][vk][iv]'
     return string.replace(pattern, ' ', '*')
 
 def quote(text=''):

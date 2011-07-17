@@ -40,7 +40,7 @@ if __name__ == '__main__':
                 #print "Removing " + file
                 #os.remove(file)
             except OSError as errormsg:
-                print "Couldn't handle " + filename + " because %s" % errormsg
+                print "Couldn't handle " + filename + " because " + errormsg
                 
     
         #Rename all episodes!
