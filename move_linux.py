@@ -1,16 +1,22 @@
 #!/usr/bin/python
 from mover import *
-
+import sys
 if __name__ == '__main__':
     import logging
     logging.basicConfig(level=logging.INFO)
     
     #f = open('tvshows.txt', 'r')
     #names = f.readlines()
-    names = ['How I Met Your Mother', 'Bored to Death', 'The Big Bang Theory', 'The Simpsons', 'Top Gear', 'Mythbusters', 'Big Love', 'Fringe', 'Boardwalk Empire', 'Dexter', 'House', 'Burnistoun', 'Breaking Bad', 'Futurama', 'The IT Crowd']
+    if len(sys.argv) < 2:
+        names = ['How I Met Your Mother', 'Bored to Death', 'The Big Bang Theory', 'The Simpsons', 'Top Gear', 'Mythbusters', 'Big Love', 'Fringe', 'Boardwalk Empire', 'Dexter', 'House', 'Burnistoun', 'Breaking Bad', 'Futurama', 'The IT Crowd']
     #names = ['The Big Bang Theory']
-    dir = "/media/Gigant/Downloads/torrent"
-    todir = "/media/Gigant/Film/TV-Serier/"
+    else:
+        names = []
+        for show in sys.argv[2:]:
+            names.append(show)
+
+    dir = "/media/Gargant/Downloads/torrent"
+    todir = "/media/Gargant/Film/TV-Serier/"
     print 'Moving files from ' + dir + ' to ' + todir
     for name in names:
         print 'Looking for episodes of ' + name
