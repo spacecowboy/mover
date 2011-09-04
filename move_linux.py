@@ -19,7 +19,7 @@ if __name__ == '__main__':
     todir = "/media/Gargant/Film/TV-Serier/"
     print 'Moving files from ' + dir + ' to ' + todir
     for name in names:
-        print 'Looking for episodes of ' + name
+        print '\nLooking for episodes of ' + name
         filepattern = generate_filepattern(name)
         #print("Filepattern: " + str(filepattern))
         #unzip(filepattern, dir)
@@ -27,7 +27,7 @@ if __name__ == '__main__':
             (path, filename) = os.path.split(file)
             #Check if it already exists
             (formatted_name, season, episode, episodename, extension) = get_formatted_name(filename, name)
-            print("Formatted name: " + str(formatted_name))
+            print("\nFormatted name: " + str(formatted_name))
             try:
                 newfiles = []
                 for newfile in locate(formatted_name, todir + name):
