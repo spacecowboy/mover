@@ -68,6 +68,7 @@ def copy_file(file, to_dir, extensions = ['avi', 'mkv']):
         raise
         
 def get_formatted_name(filename, name):
+    #print(name, filename)
     matches = re.match(r"[a-zA-Z\s\.\-_]+[seaonSEAON\s\.\-_\[\]]*(?P<season>\d?\d)[xXepisodEPISOD\s\.\-_\[\]]*(?P<episode>\d?\d).*(?P<extension>\.[a-zA-Z]+)", filename)
     if matches:
         season = matches.group('season')
