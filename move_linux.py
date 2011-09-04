@@ -12,9 +12,9 @@ if __name__ == '__main__':
     #names = ['The Big Bang Theory']
     else:
         names = []
-        for show in sys.argv[2:]:
+        for show in sys.argv[1:]:
             names.append(show)
-
+    print("Shows: " + str(names))
     dir = "/media/Gargant/Downloads/torrent"
     todir = "/media/Gargant/Film/TV-Serier/"
     print 'Moving files from ' + dir + ' to ' + todir
