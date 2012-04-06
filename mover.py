@@ -21,7 +21,7 @@ def generate_filepattern(showname, season='', episode=''):
             name += '[' + str.lower(char) + str.upper(char) + ']'
         else:
             name += char
-    pattern = name + '*?' + season + '*?' + episode + '*[am][vk][iv]'
+    pattern = name + '*?' + season + '*?' + episode + '*[am][vkp][iv4]'
     return string.replace(pattern, ' ', '*')
 
 def quote(text=''):
@@ -43,7 +43,7 @@ def unzip(filepattern, dir):
             subprocess.Popen(quote('C:\\Program Files (x86)\\7-Zip\\7z.exe') + " e -y " + quote(zippedfile), shell=True)
             print "unzipped " + zippedfile
             
-def copy_file(file, to_dir, extensions = ['avi', 'mkv']):
+def copy_file(file, to_dir, extensions = ['avi', 'mkv', 'mp4']):
     '''Moves all files matching the pattern with the (optional) extensions with the from_dir to the to_dir'''
     #files = []
     #for ext in extensions:
@@ -67,7 +67,7 @@ def copy_file(file, to_dir, extensions = ['avi', 'mkv']):
         print "Couldn't copy " + file + " because %s" % errormsg
         raise
 
-def link_file(name, filename, path, to_dir, extensions = ['avi', 'mkv']):
+def link_file(name, filename, path, to_dir, extensions = ['avi', 'mkv', 'mp4']):
     (formatted_name, season, episode, episodename, extension) = get_formatted_name(filename, name)
     if formatted_name:
         #path = path + '\\'
@@ -83,7 +83,7 @@ def link_file(name, filename, path, to_dir, extensions = ['avi', 'mkv']):
 
 def get_formatted_name(filename, name):
     #print(name, filename)
-    matches = re.match(r"[a-zA-Z\s\.\-_\d\(\)]+?[seaonSEAON\s\.\-_\[\]]+(?P<season>\d?\d)[xXepisodEPISOD\s\.\-_\[\]]+(?P<episode>\d?\d).*(?P<extension>\.[a-zA-Z]+)", filename)
+    matches = re.match(r"[a-zA-Z\s\.\-_\d\(\)]+?[seaonSEAON\s\.\-_\[\]]+(?P<season>\d?\d)[xXepisodEPISOD\s\.\-_\[\]]+(?P<episode>\d?\d).*(?P<extension>\.[a-zA-Z0-9]+)", filename)
     if matches:
         season = matches.group('season')
         episode = matches.group('episode')
@@ -108,7 +108,7 @@ def get_formatted_name(filename, name):
     else:
         return ('', '', '', '', '')
 
-def rename_file(name, filename, path, extensions = ['avi', 'mkv']):
+def rename_file(name, filename, path, extensions = ['avi', 'mkv', 'mp4']):
     #get season and episode number
     (formatted_name, season, episode, episodename, extension) = get_formatted_name(filename, name)
     if formatted_name:
