@@ -8,7 +8,7 @@ if __name__ == '__main__':
     #f = open('tvshows.txt', 'r')
     #names = f.readlines()
     if len(sys.argv) < 2:
-        names = ['How I Met Your Mother', 'Bored to Death', 'The Big Bang Theory', 'The Simpsons', 'Top Gear', 'Mythbusters', 'Big Love', 'Fringe', 'Boardwalk Empire', 'Dexter', 'House', 'Burnistoun', 'Breaking Bad', 'Futurama', 'The IT Crowd']
+        names = ['How I Met Your Mother', 'The Big Bang Theory', 'The Simpsons', 'Fringe', 'Futurama']
     #names = ['The Big Bang Theory']
     else:
         names = []
@@ -34,11 +34,14 @@ if __name__ == '__main__':
                     newfiles.append(newfile)
                 if len(newfiles) == 0:
                 #Does not exist, copy the file, rename, then remove it
-                    print "Copying " + filename + " to " + todir + name
-                    copy_file(file, todir + name)
+                    #print "Copying " + filename + " to " + todir + name
+                    #copy_file(file, todir + name)
                         
-                    print "Renaming " + filename
-                    rename_file(name, filename, todir + name)
+                    #print "Renaming " + filename
+                    #rename_file(name, filename, todir + name)
+
+                    print("Linking " + filename)
+                    link_file(name, filename, path, todir + name) 
                 else:
                     print "Exists, apparently...: " + str(newfiles)
             

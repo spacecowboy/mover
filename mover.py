@@ -66,7 +66,21 @@ def copy_file(file, to_dir, extensions = ['avi', 'mkv']):
     except OSError as errormsg:
         print "Couldn't copy " + file + " because %s" % errormsg
         raise
-        
+
+def link_file(name, filename, path, to_dir, extensions = ['avi', 'mkv']):
+    (formatted_name, season, episode, episodename, extension) = get_formatted_name(filename, name)
+    if formatted_name:
+        #path = path + '\\'
+        #Only for avi and mkv files
+        if extension in extensions or extension.replace('.','') in extensions:
+            try:
+                os.link(os.path.join(path, filename), os.path.join(to_dir,formatted_name))
+                print("Linked {}".format(os.path.join(to_dir, formatted_name)))
+            except OSError as emsg:
+                print("Coundnt link {} because {}".format(filename, emsg))
+                raise
+
+
 def get_formatted_name(filename, name):
     #print(name, filename)
     matches = re.match(r"[a-zA-Z\s\.\-_\d\(\)]+?[seaonSEAON\s\.\-_\[\]]+(?P<season>\d?\d)[xXepisodEPISOD\s\.\-_\[\]]+(?P<episode>\d?\d).*(?P<extension>\.[a-zA-Z]+)", filename)
