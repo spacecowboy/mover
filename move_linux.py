@@ -3,7 +3,7 @@ from mover import *
 import sys
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        names = ['How I Met Your Mother', 'The Big Bang Theory', 'The Simpsons', 'Fringe', 'Futurama']
+        names = ['How I Met Your Mother', 'The Big Bang Theory', 'The Simpsons', 'Fringe', 'Futurama', 'Top Gear']
     else:
         names = []
         for show in sys.argv[1:]:

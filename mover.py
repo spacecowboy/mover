@@ -99,8 +99,8 @@ def get_formatted_name(filename, name):
         try:
             episodename = tvdb_instance[name][int(season)][int(episode)]['episodename']
         except:
-            print("shit happened: S" + str(season) + "E" + str(episode))
-            raise tvdb_exceptions.tvdb_episodenotfound
+            exit("shit happened: S" + str(season) + "E" + str(episode))
+            
         #Remove illegal chars
         episodename = re.sub(r'["\*\/\\\|\<\>\?\:]', '', episodename)
         formatted_name = name.title() + ' - S' + season + 'E' + episode + ' - ' + episodename + extension
