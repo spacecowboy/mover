@@ -22,12 +22,18 @@ if __name__ == '__main__':
             print("\nFormatted name: " + str(formatted_name))
             try:
                 exists = False
-                for newfile in locate(formatted_name, todir + name):
+                #First make sure the folder exists (needed for new seasons and shows)
+                season = season[1] if season[0] == '0' else season
+                seasondir = os.path.join(todir, name, "Season {}".format(season))
+                if not os.path.exists(seasondir):
+                    os.makedirs(seasondir)
+                #Walk the tree, if we find a file with correct name then stop
+                for newfile in locate(formatted_name, seasondir):
                     exists = True
                     break
                 if not exists:
                     print("Linking " + filename)
-                    link_file(name, filename, path, todir + name) 
+                    link_file(name, filename, path, seasondir) 
                 else:
                     print "Exists, apparently..."
             except OSError as errormsg:
