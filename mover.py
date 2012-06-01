@@ -12,17 +12,17 @@ import os, fnmatch
 from tvdb_api import Tvdb
 
 def formatname(text=''):
-    return string.replace(text, ' ', '*')
+    return text.replace(' ', '*')
 
 def generate_filepattern(showname, season='', episode=''):
     name = ""
     for char in showname:
-        if str.lower(char) in string.lowercase + string.digits:
+        if str.lower(char) in string.ascii_lowercase + string.digits:
             name += '[' + str.lower(char) + str.upper(char) + ']'
         else:
             name += char
     pattern = name + '*?' + season + '*?' + episode + '*[am][vkp][iv4]'
-    return string.replace(pattern, ' ', '*')
+    return pattern.replace(' ', '*')
 
 def quote(text=''):
     '''Surrounds the text with double-qoutes. Needed for commandline operations in windows
