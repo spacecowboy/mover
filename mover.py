@@ -1,5 +1,5 @@
 import subprocess
-import ConfigParser
+import configparser
 import string
 import shutil
 import re
@@ -41,7 +41,7 @@ def unzip(filepattern, dir):
     for file in locate(filepattern, dir):
         for zippedfile in fnmatch.filter([file], "*7z") or fnmatch.filter([file], "*zip") or fnmatch.filter([file], "*rar"):
             subprocess.Popen(quote('C:\\Program Files (x86)\\7-Zip\\7z.exe') + " e -y " + quote(zippedfile), shell=True)
-            print "unzipped " + zippedfile
+            print("unzipped " + zippedfile)
             
 def copy_file(file, to_dir, extensions = ['avi', 'mkv', 'mp4']):
     '''Moves all files matching the pattern with the (optional) extensions with the from_dir to the to_dir'''
@@ -60,11 +60,11 @@ def copy_file(file, to_dir, extensions = ['avi', 'mkv', 'mp4']):
                 pass
             else:
                 raise
-        print "Copied " + file + " to " + to_dir
+        print("Copied " + file + " to " + to_dir)
         #    os.remove(file)
         #print "Removed " + file
     except OSError as errormsg:
-        print "Couldn't copy " + file + " because %s" % errormsg
+        print("Couldn't copy " + file + " because %s" % errormsg)
         raise
 
 def link_file(name, filename, path, to_dir, extensions = ['avi', 'mkv', 'mp4']):
@@ -75,9 +75,9 @@ def link_file(name, filename, path, to_dir, extensions = ['avi', 'mkv', 'mp4']):
         if extension in extensions or extension.replace('.','') in extensions:
             try:
                 os.link(os.path.join(path, filename), os.path.join(to_dir,formatted_name))
-                print("Linked " + os.path.join(to_dir, formatted_name))
+                print(("Linked " + os.path.join(to_dir, formatted_name)))
             except OSError as emsg:
-                print("Coundnt link {} because {}".format(filename, emsg))
+                print(("Coundnt link {} because {}".format(filename, emsg)))
                 raise
 
 
@@ -117,10 +117,10 @@ def rename_file(name, filename, path, extensions = ['avi', 'mkv', 'mp4']):
         if extension in extensions or extension.replace('.', '') in extensions:
             try:
                 os.rename(os.path.join(path, filename), os.path.join(path, formatted_name))
-                print "Renamed " + os.path.join(path, formatted_name)
+                print("Renamed " + os.path.join(path, formatted_name))
             except OSError as errormsg:
-                print "Couldn't rename " + filename + " because %s" % errormsg
-                print "episodename: %s" % episodename
+                print("Couldn't rename " + filename + " because %s" % errormsg)
+                print("episodename: %s" % episodename)
                 raise
 
 if __name__ == '__main__':
@@ -133,9 +133,9 @@ if __name__ == '__main__':
     #names = ['The Big Bang Theory']
     dir = "E:\\Downloads\\torrent"
     todir = "E:\\Film\\TV-Serier\\"
-    print 'Moving files from ' + dir + ' to ' + todir
+    print('Moving files from ' + dir + ' to ' + todir)
     for name in names:
-        print 'Looking for episodes of ' + name
+        print('Looking for episodes of ' + name)
         filepattern = generate_filepattern(name)
         #print("Filepattern: " + str(filepattern))
         #unzip(filepattern, dir)
@@ -143,25 +143,25 @@ if __name__ == '__main__':
             (path, filename) = os.path.split(file)
             #Check if it already exists
             (formatted_name, season, episode, episodename, extension) = get_formatted_name(filename, name)
-            print("Formatted name: " + str(formatted_name))
+            print(("Formatted name: " + str(formatted_name)))
             try:
                 newfiles = []
                 for newfile in locate(formatted_name, todir + name):
                     newfiles.append(newfile)
                 if len(newfiles) == 0:
                 #Does not exist, copy the file, rename, then remove it
-                    print "Copying " + filename + " to " + todir + name
+                    print("Copying " + filename + " to " + todir + name)
                     copy_file(file, todir + name)
-                    print "Renaming " + filename
+                    print("Renaming " + filename)
                     rename_file(name, filename, todir + name)
                 else:
-                    print "Exists, apparently...: " + str(newfiles)
+                    print("Exists, apparently...: " + str(newfiles))
             
                 #It exists, try to remove the file then
                 #print "Removing " + file
                 #os.remove(file)
             except OSError as errormsg:
-                print "Couldn't handle " + filename + " because %s" % errormsg
+                print("Couldn't handle " + filename + " because %s" % errormsg)
                 
     
         #Rename all episodes!

@@ -8,18 +8,18 @@ if __name__ == '__main__':
         names = []
         for show in sys.argv[1:]:
             names.append(show)
-    print("Shows: " + str(names))
+    print(("Shows: " + str(names)))
     fromdir = "/media/Gargant/Downloads/torrent"
     todir = "/media/Gargant/Film/TV-Serier/"
-    print 'Moving files from ' + fromdir + ' to ' + todir
+    print('Moving files from ' + fromdir + ' to ' + todir)
     for name in names:
-        print '\nLooking for episodes of ' + name
+        print('\nLooking for episodes of ' + name)
         filepattern = generate_filepattern(name)
         for filepath in locate(filepattern, fromdir):
             (path, filename) = os.path.split(filepath)
             #Check if it already exists
             (formatted_name, season, episode, episodename, extension) = get_formatted_name(filename, name)
-            print("\nFormatted name: " + formatted_name)
+            print(("\nFormatted name: " + formatted_name))
             try:
                 exists = False
                 #First make sure the folder exists (needed for new seasons and shows)
@@ -32,12 +32,12 @@ if __name__ == '__main__':
                     exists = True
                     break
                 if not exists:
-                    print("Linking " + filename)
+                    print(("Linking " + filename))
                     link_file(name, filename, path, seasondir) 
                 else:
-                    print "Exists, apparently..."
+                    print("Exists, apparently...")
             except OSError as errormsg:
-                print "Couldn't handle " + filename + " because " +str(errormsg)
+                print("Couldn't handle " + filename + " because " +str(errormsg))
     
         #Rename all episodes!
         #Bit of a double loop, prevpath makes sure only one pass per directory is done

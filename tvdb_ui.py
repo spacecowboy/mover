@@ -76,34 +76,34 @@ class ConsoleUI(BaseUI):
     def _displaySeries(self, allSeries):
         """Helper function, lists series with corresponding ID
         """
-        print "TVDB Search Results:"
+        print("TVDB Search Results:")
         for i, cshow in enumerate(allSeries[:6]):
             i_show = i + 1 # Start at more human readable number 1 (not 0)
             log().debug('Showing allSeries[%s], series %s)' % (i_show, allSeries[i]['seriesname']))
-            print "%s -> %s [%s] # http://thetvdb.com/?tab=series&id=%s&lid=%s" % (
+            print("%s -> %s [%s] # http://thetvdb.com/?tab=series&id=%s&lid=%s" % (
                 i_show,
                 cshow['seriesname'].encode("UTF-8", "ignore"),
                 cshow['language'].encode("UTF-8", "ignore"),
                 str(cshow['id']),
                 cshow['lid']
-            )
+            ))
 
     def selectSeries(self, allSeries):
         self._displaySeries(allSeries)
 
         if len(allSeries) == 1:
             # Single result, return it!
-            print "Automatically selecting only result"
+            print("Automatically selecting only result")
             return allSeries[0]
 
         if self.config['select_first'] is True:
-            print "Automatically returning first search result"
+            print("Automatically returning first search result")
             return allSeries[0]
 
         while True: # return breaks this loop
             try:
-                print "Enter choice (first number, ? for help):"
-                ans = raw_input()
+                print("Enter choice (first number, ? for help):")
+                ans = input()
             except KeyboardInterrupt:
                 raise tvdb_userabort("User aborted (^c keyboard interupt)")
             except EOFError:
@@ -117,10 +117,10 @@ class ConsoleUI(BaseUI):
                     log().debug('Got quit command (q)')
                     raise tvdb_userabort("User aborted ('q' quit command)")
                 elif ans == "?":
-                    print "## Help"
-                    print "# Enter the number that corresponds to the correct show."
-                    print "# ? - this help"
-                    print "# q - abort tvnamer"
+                    print("## Help")
+                    print("# Enter the number that corresponds to the correct show.")
+                    print("# ? - this help")
+                    print("# q - abort tvnamer")
                 else:
                     log().debug('Unknown keypress %s' % (ans))
             else:
@@ -129,7 +129,7 @@ class ConsoleUI(BaseUI):
                     return allSeries[ selected_id ]
                 except IndexError:
                     log().debug('Invalid show number entered!')
-                    print "Invalid number (%s) selected!"
+                    print("Invalid number (%s) selected!")
                     self._displaySeries(allSeries)
             #end try
         #end while not valid_input
