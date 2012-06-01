@@ -75,7 +75,7 @@ def link_file(name, filename, path, to_dir, extensions = ['avi', 'mkv', 'mp4']):
         if extension in extensions or extension.replace('.','') in extensions:
             try:
                 os.link(os.path.join(path, filename), os.path.join(to_dir,formatted_name))
-                print("Linked {}".format(os.path.join(to_dir, formatted_name)))
+                print("Linked " + os.path.join(to_dir, formatted_name))
             except OSError as emsg:
                 print("Coundnt link {} because {}".format(filename, emsg))
                 raise

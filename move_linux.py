@@ -19,7 +19,7 @@ if __name__ == '__main__':
             (path, filename) = os.path.split(filepath)
             #Check if it already exists
             (formatted_name, season, episode, episodename, extension) = get_formatted_name(filename, name)
-            print("\nFormatted name: " + str(formatted_name))
+            print("\nFormatted name: " + formatted_name)
             try:
                 exists = False
                 #First make sure the folder exists (needed for new seasons and shows)
