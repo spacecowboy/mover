@@ -46,6 +46,12 @@ _my_prefs = {
     #Instead of E01-02-03
     'episode_separator': 'E',
 
+    #Yes I want to search recursively
+    'recursive': True,
+
+    #Only include these types
+    'valid_extensions': ('avi', 'mkv', 'mp4'),
+
     }
 
 Config = dict(defaults)
