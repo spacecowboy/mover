@@ -1,50 +1,74 @@
 #!/usr/bin/python
-from mover import *
-import sys
+#from mover import *
+import sys, os
+
+from tvnamer.tvdb_api.tvdb_api import Tvdb
+from tvnamer.main import findFiles
+from tvnamer.utils import FileParser
+from tvnamer.tvnamer_exceptions import *
+
+_fromdir = "/media/Gargant/Downloads/torrent"
+_todir = "/media/Gargant/Film/TV-Serier/"
+
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        names = ['How I Met Your Mother', 'The Big Bang Theory', 'The Simpsons', 'Fringe', 'Futurama', 'Top Gear']
+        paths = [_fromdir]
     else:
-        names = []
-        for show in sys.argv[1:]:
-            names.append(show)
-    print("Shows: " + str(names))
-    fromdir = "/media/Gargant/Downloads/torrent"
-    todir = "/media/Gargant/Film/TV-Serier/"
-    print 'Moving files from ' + fromdir + ' to ' + todir
-    for name in names:
-        print '\nLooking for episodes of ' + name
-        filepattern = generate_filepattern(name)
-        for filepath in locate(filepattern, fromdir):
-            (path, filename) = os.path.split(filepath)
-            #Check if it already exists
-            (formatted_name, season, episode, episodename, extension) = get_formatted_name(filename, name)
-            print("\nFormatted name: " + formatted_name)
-            try:
-                exists = False
-                #First make sure the folder exists (needed for new seasons and shows)
-                season = season[1] if season[0] == '0' else season
-                seasondir = os.path.join(todir, name, "Season {}".format(season))
-                if not os.path.exists(seasondir):
-                    os.makedirs(seasondir)
-                #Walk the tree, if we find a file with correct name then stop
-                for newfile in locate(formatted_name, seasondir):
-                    exists = True
-                    break
-                if not exists:
-                    print("Linking " + filename)
-                    link_file(name, filename, path, seasondir) 
-                else:
-                    print "Exists, apparently..."
-            except OSError as errormsg:
-                print "Couldn't handle " + filename + " because " +str(errormsg)
-    
-        #Rename all episodes!
-        #Bit of a double loop, prevpath makes sure only one pass per directory is done
-        #prevpath = ''
-        #for file in locate(filepattern, "E:\\Film\\TV-Serier\\Fringe\\"):
-            #(path, filename) = os.path.split(file)
-            #if prevpath != path:
-            #rename_file(name, filename, path)
-            #    prevpath = path
+        paths = sys.argv[1:]
 
+    print('Moving files from {} to {}'.format(paths, _todir))
+
+    episodes_found = []
+
+    #Look for video files
+    for validfile in findFiles(paths):
+        #Parse the filename
+        parser = FileParser(validfile)
+        try:
+            episode = parser.parse()
+        except InvalidFilename as e:
+            print("\nInvalid filename: {}".format(e))
+            continue
+        else:
+            #Need show name
+            if episode.seriesname is None:
+                print("\nSeries name not found: {}".format(validfile))
+                continue
+            else:
+                episodes_found.append(episode)
+
+    if not episodes_found:
+        exit('\nNo episodes found...')
+
+    # Sort episodes by series, season and episode
+    episodes_found.sort(key = lambda x: x.sortable_info())
+
+    # Time to get info from the net
+    tvdb = Tvdb()
+
+    for episode in episodes_found:
+        try:
+            episode.populateFromTvdb(tvdb)
+        except (DataRetrievalError, ShowNotFound, SeasonNotFound, EpisodeNotFound,
+                EpisodeNameNotFound) as e:
+            print("\nSkipping {0.originalfilename} due to {1}".format(episode, e))
+            continue
+
+        formatted_name = episode.generateFilename()
+        print("\nFormatted name: " + formatted_name)
+        try:
+            seasondir = os.path.join(_todir, episode.seriesname,
+                                     "Season {}".format(episode.seasonnumber))
+        except AttributeError as e:
+            #Could be anime, they dont have seasons
+            seasondir = os.path.join(_todir, episode.seriesname)
+
+        print("Destination dir: {}".format(seasondir))
+        print("Original: {}".format(episode.fullpath))
+
+        try:
+            #os.link(episode.fullpath, os.path.join(seasondir, formatted_name))
+            print("Linked " + os.path.join(seasondir, formatted_name))
+        except OSError as emsg:
+            print("Coundnt link {} because {}".format(filename, emsg))
+            continue
