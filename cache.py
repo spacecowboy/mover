@@ -39,7 +39,7 @@ def locked_function(origfunc):
 def calculate_cache_path(cache_location, url):
     """Checks if [cache_location]/[hash_of_url].headers and .body exist
     """
-    thumb = md5(url).hexdigest()
+    thumb = md5(url.encode('utf-8')).hexdigest()
     header = os.path.join(cache_location, thumb + ".headers")
     body = os.path.join(cache_location, thumb + ".body")
     return header, body
@@ -119,6 +119,7 @@ class CacheHandler(urllib.request.BaseHandler):
         if request.get_method() is not "GET":
             return None # let the next handler try to handle the request
 
+        return None
         if exists_in_cache(
             self.cache_location, request.get_full_url(), self.max_age
         ):
@@ -137,6 +138,7 @@ class CacheHandler(urllib.request.BaseHandler):
         if (request.get_method() == "GET"
             and str(response.code).startswith("2")
         ):
+            return response
             if 'x-local-cache' not in response.info():
                 # Response is not cached
                 set_cache_header = store_in_cache(
@@ -148,11 +150,12 @@ class CacheHandler(urllib.request.BaseHandler):
                 set_cache_header = True
             #end if x-cache in response
 
-            return CachedResponse(
-                self.cache_location,
-                request.get_full_url(),
-                set_cache_header = set_cache_header
-            )
+            
+            #return CachedResponse(
+            #    self.cache_location,
+            #    request.get_full_url(),
+            #    set_cache_header = set_cache_header
+            #)
         else:
             return response
 
@@ -167,16 +170,20 @@ class CachedResponse(io.StringIO):
     def __init__(self, cache_location, url, set_cache_header=True):
         self.cache_location = cache_location
         hpath, bpath = calculate_cache_path(cache_location, url)
-
-        io.StringIO.__init__(self, file(bpath).read())
+        
+        with open(bpath) as f:
+            io.StringIO.__init__(self, f.read())
 
         self.url     = url
         self.code    = 200
         self.msg     = "OK"
-        headerbuf = file(hpath).read()
+        with open(hpath) as f:
+            headerbuf = f.read()
         if set_cache_header:
             headerbuf += "x-local-cache: %s\r\n" % (bpath)
         self.headers = http.client.HTTPMessage(io.StringIO(headerbuf))
+        #a = io.StringIO(headerbuf)
+        #self.headers = http.client.parse_headers(io.StringIO(headerbuf))
 
     def info(self):
         """Returns headers
